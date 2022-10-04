@@ -41,7 +41,10 @@ namespace Movie
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Movie v1"));
+                app.UseSwaggerUI(c => {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Movie v1");
+                    c.RoutePrefix = String.Empty;
+                    });
             }
 
             app.UseHttpsRedirection();
