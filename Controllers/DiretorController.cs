@@ -15,24 +15,39 @@ public class DiretorController : ControllerBase {
     }
 
     [HttpGet]
-    public async Task<List<Diretor>> GetAll() {
+    public async Task<ActionResult<List<DiretorOutputGetAllDTO>>> GetAll() {
         
-        return await _context.Diretores.ToListAsync();
+        var diretores =  await _context.Diretores.ToListAsync();
+        var diretorOutputGetAllDTO = new List<DiretorOutputGetAllDTO>();
+        
+        foreach(var diretor in diretores) {
+            var diretorOutput = new DiretorOutputGetAllDTO(diretor.Id, diretor.Nome);
+            diretorOutputGetAllDTO.Add(diretorOutput);
+        }
+
+        return Ok(diretorOutputGetAllDTO);
     }
 
     [HttpGet("{id:long}")]
-    public async Task<Diretor> GetById(long id) {
+    public async Task<ActionResult<DiretorOutputGetByIdDTO>> GetById(long id) {
 
-        return await _context.Diretores.FirstOrDefaultAsync(d => d.Id == id);
+        var diretor =  await _context.Diretores.FirstOrDefaultAsync(d => d.Id == id);
+
+        var diretorOutputGetByIdDTO = new DiretorOutputGetByIdDTO(diretor.Id, diretor.Nome);
+
+        return Ok(diretorOutputGetByIdDTO);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Diretor>> Post([FromBody] Diretor diretor) {
+    public async Task<ActionResult<DiretorOutputPostDTO>> Post([FromBody] DiretorInputPostDTO diretorInputPostDTO) {
         
+        var diretor = new Diretor(diretorInputPostDTO.Nome);
         _context.Diretores.Add(diretor);
         await _context.SaveChangesAsync();
+
+        var diretorOutputDTO = new DiretorOutputPostDTO(diretor.Id, diretor.Nome);
         
-        return Ok(diretor);
+        return Ok(diretorOutputDTO);
     }
 
     [HttpDelete("{id:long}")]
@@ -45,12 +60,17 @@ public class DiretorController : ControllerBase {
         return Ok(diretor);
     }
 
-    [HttpPut]
-    public async Task<ActionResult<Diretor>> Put([FromBody] Diretor diretor) {
+    [HttpPut("{id:long}")]
+    public async Task<ActionResult<DiretorOutputPutDTO>> Put([FromBody] DiretorInputPutDTO diretorInputPutDTO, long id) {
 
-        _context.Entry(diretor).State = EntityState.Modified;
+        var diretor = new Diretor(diretorInputPutDTO.Nome);
+        
+        diretor.Id = id;
+        _context.Diretores.Update(diretor);
         await _context.SaveChangesAsync();
 
-        return Ok(diretor);   
+        var diretorOutputPutDTO = new DiretorOutputPutDTO(diretor.Id, diretor.Nome);
+
+        return Ok(diretorOutputPutDTO);   
     }
 }

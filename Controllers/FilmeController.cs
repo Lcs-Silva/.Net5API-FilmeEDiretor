@@ -15,24 +15,40 @@ public class FilmeController : ControllerBase {
     }
 
     [HttpGet]
-    public async Task<List<Filme>> GetAll() {
+    public async Task<ActionResult<List<FilmeOutputGetAllDTO>>> GetAll() {
         
-        return await _context.Filmes.ToListAsync();
+        var filmes =  await _context.Filmes.ToListAsync();
+        var filmeOutputGetAllDTO = new List<FilmeOutputGetAllDTO>();
+
+        foreach(var filme in filmes) {
+            var filmeOutput = new FilmeOutputGetAllDTO(filme.Titulo, filme.Ano, filme.Genero);
+            filmeOutputGetAllDTO.Add(filmeOutput);
+        }
+
+        return Ok(filmeOutputGetAllDTO);
     }
 
     [HttpGet("{id:long}")]
-    public async Task<Filme> GetById(long id) {
+    public async Task<ActionResult<Filme>> GetById(long id) {
 
-        return await _context.Filmes.FirstOrDefaultAsync(d => d.Id == id);
+        var filme = await _context.Filmes.FirstOrDefaultAsync(d => d.Id == id);
+
+        var filmeOutputGetByIdDTO = new FilmeOutputGetByIdDTO(filme.Titulo, filme.Ano, filme.Genero);
+
+        return Ok(filmeOutputGetByIdDTO);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Filme>> Post([FromBody] Filme filme) {
+    public async Task<ActionResult<FilmeOutputPostDTO>> Post([FromBody] FilmeInputPostDTO filmeInputPostDTO) {
+        
+        var filme = new Filme(filmeInputPostDTO.Titulo, filmeInputPostDTO.Ano, filmeInputPostDTO.Genero, filmeInputPostDTO.DiretorId);
         
         _context.Filmes.Add(filme);
         await _context.SaveChangesAsync();
+
+        var filmeOutputPostDTO = new FilmeOutputPostDTO(filme.Titulo, filme.Ano, filme.Genero);
         
-        return Ok(filme);
+        return Ok(filmeOutputPostDTO);
     }
 
     [HttpDelete("{id:long}")]
@@ -45,12 +61,17 @@ public class FilmeController : ControllerBase {
         return Ok(filme);
     }
 
-    [HttpPut]
-    public async Task<ActionResult<Filme>> Put([FromBody] Filme filme) {
+    [HttpPut("{id:long}")]
+    public async Task<ActionResult<FilmeOutputPutDTO>> Put([FromBody] FilmeInputPutDTO filmeInputPutDTO, long id) {
 
-        _context.Entry(filme).State = EntityState.Modified;
+        var filme = new Filme(filmeInputPutDTO.Titulo, filmeInputPutDTO.Ano, filmeInputPutDTO.Genero, filmeInputPutDTO.DiretorId);
+        
+        filme.Id = id;
+        _context.Filmes.Update(filme);
         await _context.SaveChangesAsync();
 
-        return Ok(filme);   
+        var filmeOutputPutDTO = new FilmeOutputPutDTO(filme.Titulo, filme.Ano, filme.Genero);
+
+        return Ok(filmeOutputPutDTO);   
     }
 }
