@@ -31,15 +31,22 @@ public class FilmeController : ControllerBase {
     [HttpGet("{id:long}")]
     public async Task<ActionResult<Filme>> GetById(long id) {
 
-        var filme = await _context.Filmes.FirstOrDefaultAsync(d => d.Id == id);
+        var filme = await _context.Filmes.Include(f => f.Diretor).FirstOrDefaultAsync(f => f.Id == id);
 
-        var filmeOutputGetByIdDTO = new FilmeOutputGetByIdDTO(filme.Titulo, filme.Ano, filme.Genero);
+        var filmeOutputGetByIdDTO = new FilmeOutputGetByIdDTO(filme.Titulo, filme.Ano, filme.Genero, filme.Diretor.Nome);
 
         return Ok(filmeOutputGetByIdDTO);
     }
 
     [HttpPost]
     public async Task<ActionResult<FilmeOutputPostDTO>> Post([FromBody] FilmeInputPostDTO filmeInputPostDTO) {
+        
+        var diretor = _context.Diretores.FirstOrDefaultAsync(d => d.Id == filmeInputPostDTO.DiretorId);
+        
+        if(diretor is null) {
+            
+            return Conflict("Informe um Id de diretor que seja válido");
+        }
         
         var filme = new Filme(filmeInputPostDTO.Titulo, filmeInputPostDTO.Ano, filmeInputPostDTO.Genero, filmeInputPostDTO.DiretorId);
         
