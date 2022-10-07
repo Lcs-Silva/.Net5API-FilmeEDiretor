@@ -55,6 +55,8 @@ namespace Movie
 
             app.UseAuthorization();
 
+            app.UseMiddleware(typeof(ErrroHandlingMiddleware));
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +17,20 @@ public class DiretorController : ControllerBase {
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<DiretorOutputGetAllDTO>>> GetAll() {
+    public async Task<ActionResult<List<DiretorOutputGetAllDTO>>> GetAll()
+    {
         
-        var diretores =  await _context.Diretores.ToListAsync();
+        var diretores = await _context.Diretores.ToListAsync();
+
+        if (!diretores.Any()) {
+                
+            throw new Exception("Não foi encontrado nenhum diretor.");
+        }
+
         var diretorOutputGetAllDTO = new List<DiretorOutputGetAllDTO>();
-        
-        foreach(var diretor in diretores) {
+
+        foreach (var diretor in diretores)
+        {
             var diretorOutput = new DiretorOutputGetAllDTO(diretor.Id, diretor.Nome);
             diretorOutputGetAllDTO.Add(diretorOutput);
         }
@@ -30,12 +40,16 @@ public class DiretorController : ControllerBase {
 
     [HttpGet("{id:long}")]
     public async Task<ActionResult<DiretorOutputGetByIdDTO>> GetById(long id) {
-
+   
         var diretor =  await _context.Diretores.FirstOrDefaultAsync(d => d.Id == id);
+
+        if(diretor is null) {
+            throw new Exception("Não foi encontrado nenhum diretor.");
+        }
 
         var diretorOutputGetByIdDTO = new DiretorOutputGetByIdDTO(diretor.Id, diretor.Nome);
 
-        return Ok(diretorOutputGetByIdDTO);
+        return Ok(diretorOutputGetByIdDTO);  
     }
 
     [HttpPost]
@@ -46,7 +60,7 @@ public class DiretorController : ControllerBase {
         await _context.SaveChangesAsync();
 
         var diretorOutputDTO = new DiretorOutputPostDTO(diretor.Id, diretor.Nome);
-        
+            
         return Ok(diretorOutputDTO);
     }
 
@@ -62,15 +76,15 @@ public class DiretorController : ControllerBase {
 
     [HttpPut("{id:long}")]
     public async Task<ActionResult<DiretorOutputPutDTO>> Put([FromBody] DiretorInputPutDTO diretorInputPutDTO, long id) {
-
-        var diretor = new Diretor(diretorInputPutDTO.Nome);
         
+        var diretor = new Diretor(diretorInputPutDTO.Nome);
+            
         diretor.Id = id;
         _context.Diretores.Update(diretor);
         await _context.SaveChangesAsync();
 
         var diretorOutputPutDTO = new DiretorOutputPutDTO(diretor.Id, diretor.Nome);
 
-        return Ok(diretorOutputPutDTO);   
+        return Ok(diretorOutputPutDTO);
     }
 }
