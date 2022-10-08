@@ -32,13 +32,7 @@ namespace Movie
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
-            
-            services.AddFluentValidationAutoValidation();
-            services.AddScoped<IValidator<DiretorInputPostDTO>, DiretorInputPostDTOValidator>();
-            services.AddScoped<IValidator<DiretorInputPutDTO>, DiretorInputPutDTOValidator>();
-            services.AddScoped<IValidator<FilmeInputPostDTO>, FilmeInputPostDTOValidator>();
-            services.AddScoped<IValidator<FilmeInputPutDTO>, FilmeInputPutDTOValidator>();
+            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddSwaggerGen(c =>
             {
