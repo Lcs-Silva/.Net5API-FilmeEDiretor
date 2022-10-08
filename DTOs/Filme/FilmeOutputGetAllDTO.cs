@@ -1,12 +1,15 @@
 public class FilmeOutputGetAllDTO {
 
-    public FilmeOutputGetAllDTO(string titulo, string ano, string genero)
+    public FilmeOutputGetAllDTO(long id, string titulo, string ano, string genero)
     {
+        
+        Id = id;
         Titulo = titulo;
         Ano = ano;
         Genero = genero;
     }
     
+    public long Id { get; set; }
     public string Titulo { get; set; }
     public string Ano { get; set; }
     public string Genero { get; set; }

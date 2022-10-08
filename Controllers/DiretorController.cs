@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,20 +20,11 @@ public class DiretorController : ControllerBase {
     /// <returns>Todos os diretores</returns>
     /// <response code="200">Lista de diretores retornadas com sucesso</response>
     [HttpGet]
-    public async Task<ActionResult<List<DiretorOutputGetAllDTO>>> GetAll()
-    {
+    public async Task<ActionResult<DiretorPagedOutputDTO>> GetAll(CancellationToken cancellationToken, int limit = 5, int page = 1) {
         
-        var diretores = await _diretorService.GetAll();
+        var pagedDiretores = await _diretorService.GetAll(page, limit, cancellationToken);
 
-        var diretorOutputGetAllDTO = new List<DiretorOutputGetAllDTO>();
-
-        foreach (var diretor in diretores)
-        {
-            var diretorOutput = new DiretorOutputGetAllDTO(diretor.Id, diretor.Nome);
-            diretorOutputGetAllDTO.Add(diretorOutput);
-        }
-
-        return Ok(diretorOutputGetAllDTO);
+        return Ok(pagedDiretores);
     }
 
     /// <summary>

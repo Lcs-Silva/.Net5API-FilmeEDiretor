@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,15 +14,21 @@ public class FilmeService : IFilmeService {
         _context = context;
      }
 
-    public async Task<List<Filme>> GetAll() {
+    public async Task<FilmePagedOutputDTO> GetAll(int page, int limit, CancellationToken cancellationToken) {
         
-        var filmes = await _context.Filmes.ToListAsync();
+        var pagedFilmes = await _context.Filmes.OrderBy(f => f.Id).PaginateAsync(page, limit, cancellationToken);
 
-        if(!filmes.Any()) {
+        if(!pagedFilmes.Items.Any()) {
             throw new Exception("Não foi encontrado nenhum filme.");
         }
 
-        return filmes;
+        return new FilmePagedOutputDTO {
+            CurrentPage = pagedFilmes.CurrentPage,
+            TotalPages = pagedFilmes.TotalPages,
+            TotalItems = pagedFilmes.TotalItems,
+            Items = pagedFilmes.Items.Select(filme => new FilmeOutputGetAllDTO(filme.Id, filme.Titulo, filme.Ano, filme.Genero)).ToList()
+        };
+
     }
     
     public async Task<Filme> GetById(long id) {

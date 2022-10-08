@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,18 +24,11 @@ public class FilmeController : ControllerBase {
     /// <returns>Todos os filmes</returns>
     /// <response code="200">Lista de filmes retornadas com sucesso</response>
     [HttpGet]
-    public async Task<ActionResult<List<FilmeOutputGetAllDTO>>> GetAll() {
+    public async Task<ActionResult<FilmePagedOutputDTO>> GetAll(CancellationToken cancellationToken, int limit = 5, int page = 1) {
             
-        var filmes = await _filmeService.GetAll();
+        var pagedFilmes = await _filmeService.GetAll(page, limit, cancellationToken);
 
-        var filmeOutputGetAllDTO = new List<FilmeOutputGetAllDTO>();
-
-        foreach(var filme in filmes) {
-            var filmeOutput = new FilmeOutputGetAllDTO(filme.Titulo, filme.Ano, filme.Genero);
-            filmeOutputGetAllDTO.Add(filmeOutput);
-        }
-
-        return Ok(filmeOutputGetAllDTO);
+        return pagedFilmes;
     }
 
    
