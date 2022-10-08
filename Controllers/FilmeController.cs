@@ -9,12 +9,10 @@ using Microsoft.EntityFrameworkCore;
 [Route("[controller]")]
 public class FilmeController : ControllerBase {
 
-    private readonly ApplicationDbContext _context;
     private readonly IFilmeService _filmeService;
 
-    public FilmeController(ApplicationDbContext context, IFilmeService filmeService) {
+    public FilmeController(IFilmeService filmeService) {
         
-        _context = context;
         _filmeService = filmeService;
     }
 
