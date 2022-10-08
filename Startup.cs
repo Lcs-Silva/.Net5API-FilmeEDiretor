@@ -14,6 +14,8 @@ using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.IO;
+using FluentValidation.AspNetCore;
+using FluentValidation;
 
 namespace Movie
 {
@@ -31,6 +33,13 @@ namespace Movie
         {
 
             services.AddControllers();
+            
+            services.AddFluentValidationAutoValidation();
+            services.AddScoped<IValidator<DiretorInputPostDTO>, DiretorInputPostDTOValidator>();
+            services.AddScoped<IValidator<DiretorInputPutDTO>, DiretorInputPutDTOValidator>();
+            services.AddScoped<IValidator<FilmeInputPostDTO>, FilmeInputPostDTOValidator>();
+            services.AddScoped<IValidator<FilmeInputPutDTO>, FilmeInputPutDTOValidator>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Movie", Version = "v1" });

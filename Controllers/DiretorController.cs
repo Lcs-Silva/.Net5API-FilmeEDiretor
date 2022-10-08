@@ -77,6 +77,7 @@ public class DiretorController : ControllerBase {
     /// <param name="diretorInputPostDTO">Atributos do diretor</param>
     /// <returns>O diretor criado</returns>
     /// <response code="200">Diretor criado com sucesso</response>
+    /// <response code="400">Erro de validação</response>
     [HttpPost]
     public async Task<ActionResult<DiretorOutputPostDTO>> Post([FromBody] DiretorInputPostDTO diretorInputPostDTO) {
         
