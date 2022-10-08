@@ -16,6 +16,12 @@ public class FilmeController : ControllerBase {
         _context = context;
     }
 
+    
+    /// <summary>
+    /// Busca todos os filmes
+    /// </summary>
+    /// <returns>Todos os filmes</returns>
+    /// <response code="200">Lista de filmes retornadas com sucesso</response>
     [HttpGet]
     public async Task<ActionResult<List<FilmeOutputGetAllDTO>>> GetAll() {
             
@@ -35,7 +41,14 @@ public class FilmeController : ControllerBase {
         return Ok(filmeOutputGetAllDTO);
     }
 
-    [HttpGet("{id:long}")]
+   
+   /// <summary>
+   /// Busca um filme específico
+   /// </summary>
+   /// <param name="id">Id do filme</param>
+   /// <returns>O filme com Id requisitado</returns>
+   /// <response code="200">Filme retornado com sucesso</response>
+   [HttpGet("{id:long}")]
     public async Task<ActionResult<Filme>> GetById(long id) {
         
         var filme = await _context.Filmes.Include(f => f.Diretor).FirstOrDefaultAsync(f => f.Id == id);
@@ -49,6 +62,23 @@ public class FilmeController : ControllerBase {
         return Ok(filmeOutputGetByIdDTO);
     }
 
+    /// <summary>
+    /// Cria um filme
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///        "titulo": "Martin Scorsese",
+    ///        "ano": "2000",
+    ///        "genero": "Aventura",
+    ///        "diretorId": 5
+    ///     }
+    ///
+    /// </remarks>
+    /// <param name="filmeInputPostDTO">Atributos do filme</param>
+    /// <returns>O filme criado</returns>
+    /// <response code="200">Filme criado com sucesso</response>
     [HttpPost]
     public async Task<ActionResult<FilmeOutputPostDTO>> Post([FromBody] FilmeInputPostDTO filmeInputPostDTO) {
         
@@ -68,7 +98,13 @@ public class FilmeController : ControllerBase {
             
         return Ok(filmeOutputPostDTO);
     }
-
+    
+    /// <summary>
+    /// Deleta um filme
+    /// </summary>
+    /// <param name="id">Id do filme</param>
+    /// <returns>O filme deletado</returns>
+    /// <response code="200">Filme deletado com sucesso</response>
     [HttpDelete("{id:long}")]
     public async Task<ActionResult<Filme>> Delete(long id) {
         
@@ -79,6 +115,24 @@ public class FilmeController : ControllerBase {
         return Ok(filme);
     }
 
+    /// <summary>
+    /// Atualiza um filme
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///        "titulo": "Martin Scorsese",
+    ///        "ano": "2000",
+    ///        "genero": "Aventura",
+    ///        "diretorId": 5
+    ///     }
+    ///
+    /// </remarks>
+    /// <param name="filmeInputPutDTO">Atributos do filme</param>
+    /// <param name="id">Id do filme</param>
+    /// <returns>O filme atualizado</returns>
+    /// <response code="200">Filme atualizado com sucesso</response>
     [HttpPut("{id:long}")]
     public async Task<ActionResult<FilmeOutputPutDTO>> Put([FromBody] FilmeInputPutDTO filmeInputPutDTO, long id) {
         

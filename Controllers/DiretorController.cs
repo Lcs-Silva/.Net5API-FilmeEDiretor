@@ -15,7 +15,12 @@ public class DiretorController : ControllerBase {
         
         _context = context;
     }
-
+    
+    /// <summary>
+    /// Busca todos os diretores
+    /// </summary>
+    /// <returns>Todos os diretores</returns>
+    /// <response code="200">Lista de diretores retornadas com sucesso</response>
     [HttpGet]
     public async Task<ActionResult<List<DiretorOutputGetAllDTO>>> GetAll()
     {
@@ -38,6 +43,12 @@ public class DiretorController : ControllerBase {
         return Ok(diretorOutputGetAllDTO);
     }
 
+    /// <summary>
+    /// Busca um diretor específico
+    /// </summary>
+    /// <param name="id">Id do diretor</param>
+    /// <returns>O diretor com Id requisitado</returns>
+    /// <response code="200">Diretor retornado com sucesso</response>
     [HttpGet("{id:long}")]
     public async Task<ActionResult<DiretorOutputGetByIdDTO>> GetById(long id) {
    
@@ -52,6 +63,20 @@ public class DiretorController : ControllerBase {
         return Ok(diretorOutputGetByIdDTO);  
     }
 
+    /// <summary>
+    /// Cria um diretor
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///        "nome": "Lucas Silva"
+    ///     }
+    ///
+    /// </remarks>
+    /// <param name="diretorInputPostDTO">Atributos do diretor</param>
+    /// <returns>O diretor criado</returns>
+    /// <response code="200">Diretor criado com sucesso</response>
     [HttpPost]
     public async Task<ActionResult<DiretorOutputPostDTO>> Post([FromBody] DiretorInputPostDTO diretorInputPostDTO) {
         
@@ -64,6 +89,12 @@ public class DiretorController : ControllerBase {
         return Ok(diretorOutputDTO);
     }
 
+    /// <summary>
+    /// Deleta um diretor
+    /// </summary>
+    /// <param name="id">Id do diretor</param>
+    /// <returns>O diretor deletado</returns>
+    /// <response code="200">Diretor deletado com sucesso</response>
     [HttpDelete("{id:long}")]
     public async Task<ActionResult<Diretor>> Delete(long id) {
 
@@ -74,6 +105,21 @@ public class DiretorController : ControllerBase {
         return Ok(diretor);
     }
 
+    /// <summary>
+    /// Atualiza um diretor
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///        "nome": "Lucas Silva"
+    ///     }
+    ///
+    /// </remarks>
+    /// <param name="diretorInputPutDTO">Atributos do diretor</param>
+    /// <param name="id">Id do diretor</param>
+    /// <returns>O diretor atualizado</returns>
+    /// <response code="200">Diretor atualizado com sucesso</response>
     [HttpPut("{id:long}")]
     public async Task<ActionResult<DiretorOutputPutDTO>> Put([FromBody] DiretorInputPutDTO diretorInputPutDTO, long id) {
         
