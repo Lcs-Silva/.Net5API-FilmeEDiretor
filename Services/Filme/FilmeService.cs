@@ -59,11 +59,13 @@ public class FilmeService : IFilmeService {
         return filme;
     }
 
-    public async Task<Filme> Put(Filme filme) {
+    public async Task<Filme> Put(Filme filme, long id) {
         
         if(filme.DiretorId == 0) {
             throw new Exception("Insira um ID válido de diretor.");
         }
+
+        filme.Id = id;
         
         _context.Filmes.Update(filme);
         await _context.SaveChangesAsync();

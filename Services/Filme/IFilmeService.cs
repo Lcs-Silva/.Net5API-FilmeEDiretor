@@ -7,5 +7,5 @@ public interface IFilmeService {
     Task<Filme> GetById(long id);
     Task<Filme> Post(Filme filme);
     Task<Filme> Delete(long id);
-    Task<Filme> Put(Filme filme);
+    Task<Filme> Put(Filme filme, long id);
 }

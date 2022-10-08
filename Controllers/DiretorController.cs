@@ -110,9 +110,8 @@ public class DiretorController : ControllerBase {
     public async Task<ActionResult<DiretorOutputPutDTO>> Put([FromBody] DiretorInputPutDTO diretorInputPutDTO, long id) {
         
         var diretor = new Diretor(diretorInputPutDTO.Nome);    
-        diretor.Id = id;
 
-        await _diretorService.Put(diretor);
+        await _diretorService.Put(diretor, id);
 
         var diretorOutputPutDTO = new DiretorOutputPutDTO(diretor.Id, diretor.Nome);
 

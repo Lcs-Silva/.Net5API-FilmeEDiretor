@@ -54,7 +54,9 @@ public class DiretorService : IDiretorService {
         return diretor;
     }
 
-    public async Task<Diretor> Put(Diretor diretor) {
+    public async Task<Diretor> Put(Diretor diretor, long id) {
+
+        diretor.Id = id;
 
         _context.Diretores.Update(diretor);
         await _context.SaveChangesAsync();
